@@ -1,0 +1,808 @@
+\documentclass[12pt]{article}
+
+\usepackage{graphicx}
+\usepackage{paralist}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{hhline}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{url}
+\usepackage{hyperref}
+
+\oddsidemargin -10mm
+\evensidemargin -10mm
+\textwidth 160mm
+\textheight 200mm
+\renewcommand\baselinestretch{1.0}
+
+\pagestyle {plain}
+\pagenumbering{arabic}
+
+\newcounter{stepnum}
+
+%% Comments
+
+\usepackage{color}
+
+\newif\ifcomments\commentstrue
+
+\ifcomments
+\newcommand{\authornote}[3]{\textcolor{#1}{[#3 ---#2]}}
+\newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
+\else
+\newcommand{\authornote}[3]{}
+\newcommand{\todo}[1]{}
+\fi
+
+\newcommand{\wss}[1]{\authornote{blue}{SS}{#1}}
+
+\title{Assignment 3, Part 1, Specification}
+\author{SFWR ENG 2AA4, COMP SCI 2ME3}
+
+\begin {document}
+
+\maketitle
+This Module Interface Specification (MIS) document contains modules, types and
+methods used to support the CEAB (Canadian Engineering Accreditation Board)
+graduate attributes process.  An accredited program needs to measure the
+learning outcomes in all of the courses and show that the measures adequately
+satisfy the graduate attributes specified by the CEAB.
+
+For every learning outcome in every course in a given program the number of
+students is counted in each of the following categories: below expectations,
+marginal, meets expectations and exceeds expectations.  This data for each
+learning outcome needs to be aggregated to express the results using the CEAB's
+graduate attributes.  We will use the same categories when summarizing the
+attributes, but rather than using student numbers, below, marginal, meets and
+exceeds will be expressed as percentages.
+
+Each attribute is divided into a set of indicators.  Each program consists of a
+set of courses and each course will cover a set of indicators.  For each
+indicator in a course there will be a set of learning outcomes.  The learning
+outcomes are course specific, but the indicators and the attributes are
+determined by the CEAB and the Faculty of Engineering, respectively.
+
+There are many choices on how to aggregate the data, depending on at what point
+the data is normalized.  These modules allow this choice to be modified at
+run-time so that the different possibilities can be dynamically explored.  This
+is enabled by the use of the Norm abstract object module.  At one extreme the
+data for a program is only normalized after summing all of the student counts
+for each learning outcome for each indicator for each attribute in each course.
+At the other extreme all of the data is normalized at each step, starting with
+the measures of the learning outcomes themselves.  A comparison of the different
+schemes can be found in the
+\href{https://gitlab.cas.mcmaster.ca/smiths/se2aa4_cs2me3/-/blob/master/Assignments/A3/AggregationStrategies.xlsx}
+{sample spreadsheet} available in the assignment folder.
+
+% In applying the specification, there may be cases that involve undefinedness.
+% We will interpret undefinedness following~\cite{Farmer2004}:
+
+% If $p: \alpha_1 \times .... \times \alpha_n \rightarrow \mathbb{B}$ and any of
+% $a_1, ..., a_n$ is undefined, then $p(a_1, ..., a_n)$ is False.  For instance,
+% if $p(x) = 1/x < 1$, then $p(0) = \text{False}$.  In the language of our
+% specification, if evaluating an expression generates an exception, then the
+% value of the expression is undefined.
+
+% \wss{The parts that you need to fill in are marked by comments, like this one.
+%   In several of the modules local functions are specified.  You can use these
+%   local functions to complete the missing specifications.}
+
+% \wss{As you edit the tex source, please leave the \texttt{wss} comments in the
+%   file.  Put your answer \textbf{after} the comment.  This will make grading
+%   easier.}
+
+% \bibliographystyle{plain}
+% \bibliography{SmithCollectedRefs}
+
+\newpage
+
+\section* {IndicatorT Module}
+
+\subsection*{Module}
+
+IndicatorT
+
+\subsection* {Uses}
+
+None
+
+\subsection* {Syntax}
+
+\subsubsection* {Exported Constants}
+
+None
+
+\subsubsection* {Exported Types}
+
+IndicatorT = \{\\
+    math, \textit{\#Competence in mathematics}\\
+    specEngKnow, \textit{\#Competence in specialized engineering knowledge}\\
+    assumpt, \textit{\#Ability to identify reasonable assumptions}\\
+    suitableFund, \textit{\#Ability to identify suitable engineering fundamentals}\\
+    recogTheory, \textit{\#Able to recognize and discuss applicable theory knowledge base}\\
+    modelSelect, \textit{\#Selects appropriate model and methods}\\
+    estOutcomes, \textit{\#Estimates outcomes, uncertainties and determines data to collect}\\
+    desProcess, \textit{\#Recognizes and follows an engineering design process}\\
+    desPrinciples, \textit{\#Recognizes and follows engineering design principles}\\
+    openEnded, \textit{\#Proposes solutions to open-ended problems}\\
+    ideaGeneration, \textit{\#Employs appropriate techniques for generation of creative ideas}\\
+    healthSafety, \textit{\#Includes appropriate health and safety considerations}\\
+    standards, \textit{\#Determines and employs applicable standards and codes of practice}\\
+    tools, \textit{\#The ability to use modern/state of the art tools}\\
+    engInSoc, \textit{\#Demonstrates an understanding of the role of the engineer in society}\\
+    awarePEO; \textit{\#Aware of PEO and role of licensing}\\
+\}
+
+\subsubsection* {Exported Access Programs}
+
+None
+
+\subsection* {Semantics}
+
+\subsubsection* {State Variables}
+
+None
+
+\subsubsection* {State Invariant}
+
+None
+
+\subsubsection* {Assumptions}
+
+None
+
+\subsubsection* {Considerations}
+
+When implementing in Java, use enums (as shown in Tutorial 07 for ElementT).
+
+\newpage
+
+\section* {Attributes Module}
+
+\subsection*{Template Module}
+
+AttributeT
+
+\subsection* {Uses}
+
+IndicatorT
+
+\subsection* {Syntax}
+
+\subsubsection* {Exported Constants}
+
+None
+
+\subsubsection* {Exported Types}
+
+AttributeT = ?
+
+\subsubsection* {Exported Access Programs}
+
+\begin{tabular}{| l | l | l | p{5cm} |}
+\hline
+\textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\hline
+new AttributeT & String, seq of IndicatorT & AttributeT & \\
+\hline
+getName & & String & ~\\
+\hline
+getIndicators & & seq of IndicatorT & ~\\
+\hline
+\end{tabular}
+
+\subsection* {Semantics}
+
+\subsubsection* {State Variables}
+
+$\mathit{name}: \text{String}$\\
+$s: \text{set of IndicatorT}$
+
+\subsubsection* {State Invariant}
+
+None
+
+\subsubsection* {Assumptions}
+
+None
+
+\subsubsection* {Access Routine Semantics}
+
+\noindent new AttributeT($\mathit{attribName}, \mathit{indicators}$):
+\begin{itemize}
+\item transition: $\mathit{name}, \mathit{s} := \mathit{attribName}, \cup ( i:
+  \text{IndicatorT} | i \in \mathit{indicators} : \{ i \} )$
+\item output: $out := \mbox{self}$
+\item exception: none
+\end{itemize}
+
+\noindent getName():
+\begin{itemize}
+\item output: $out := \mathit{name}$
+\item exception: none
+\end{itemize}
+
+\noindent getIndicators():
+\begin{itemize}
+\item output: $out := \langle i: \text{IndicatorT} | i \in s : i \rangle$
+  \textit{\# order in the sequence does not matter}
+\item exception: none
+\end{itemize}
+
+\newpage
+
+\section* {Measures Interface Module}
+
+\subsection*{Interface Module}
+
+Measures
+
+\subsection* {Uses}
+
+IndicatorT, AttributeT
+
+\subsection* {Syntax}
+
+\subsubsection* {Exported Constants}
+
+None
+
+\subsubsection* {Exported Types}
+
+None 
+
+\subsubsection* {Exported Access Programs}
+
+\begin{tabular}{| l | l | l | p{6cm} |}
+\hline
+\textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\hline
+measures & & seq of $\mathbb{R}$ & UnsupportedOperationException\\
+\hline
+measures & ind: IndicatorT & seq of $\mathbb{R}$ & UnsupportedOperationException\\
+\hline
+measures & att: AttributeT & seq of $\mathbb{R}$ & UnsupportedOperationException\\
+\hline
+  
+\end{tabular}
+    
+\subsubsection* {Considerations}
+
+The interface provides several signatures for the measures method.  The modules
+that inherit Measures should provide all versions.  The
+UnsupportedOperationException is included because not all signatures are valid
+for every subclass.
+
+The entries in the output sequence at indices 0 to 3 correspond respectively to
+the number of measures: below expectations, marginal, meets expectations,
+exceeds expectations.
+
+\newpage
+
+\section* {Services Module}
+
+\subsection*{Module}
+
+Services
+
+\subsection* {Uses}
+
+None
+
+\subsection* {Syntax}
+
+\subsubsection* {Exported Constants}
+
+None
+
+\subsubsection* {Exported Types}
+
+None
+
+\subsubsection* {Exported Access Programs}
+
+\begin{tabular}{| l | l | l | p{5cm} |}
+\hline
+\textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\hline
+normal & seq of $\mathbb{R}$ & seq of $\mathbb{R}$ & \\
+\hline
+\end{tabular}
+
+\subsection* {Semantics}
+
+\subsubsection* {State Variables}
+
+None
+
+\subsubsection* {State Invariant}
+
+None
+
+\subsubsection* {Assumptions}
+
+None
+
+\subsubsection* {Access Routine Semantics}
+
+\noindent normal($v$):
+\begin{itemize}
+\item output: $\mathit{out} := \langle i: \mathbb{N} | i \in [0 .. |v|-1] :
+  v_i/\text{sum}(v) \rangle$
+\item exception: none
+\end{itemize}
+
+\subsection*{Local Functions}
+
+\noindent sum: seq of $\mathbb{R} \rightarrow \mathbb{R}$\\
+\noindent $\mbox{sum}(x) \equiv + (i: \mathbb{N} | i \in [0 .. |x|-1] : x_i )$\\
+
+\newpage
+
+\section* {Norm Aggregation Algorithm Configuration Module (Abstract Object)}
+
+\subsection*{Module}
+
+Norm
+
+\subsection* {Uses}
+
+None
+
+\subsection* {Syntax}
+
+\subsubsection* {Exported Constants}
+
+None
+
+\subsubsection* {Exported Types}
+
+None
+
+\subsubsection* {Exported Access Programs}
+
+\begin{tabular}{| l | l | l | p{5cm} |}
+  \hline
+  \textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+  \hline
+  setNorms & $\mathbb{B}$, $\mathbb{B}$, $\mathbb{B}$ & & \\
+  \hline
+  getNLOs & & $\mathbb{B}$ & \\
+  \hline
+  getNInd & & $\mathbb{B}$ & \\
+  \hline
+  getNAtt & & $\mathbb{B}$ & \\
+  \hline
+  setNLOs & $\mathbb{B}$ & & \\
+  \hline
+  setNInd & $\mathbb{B}$ & & \\
+  \hline
+  setNAtt & $\mathbb{B}$ & & \\
+  \hline
+  
+\end{tabular}
+
+\subsection* {Semantics}
+
+\subsubsection* {State Variables}
+
+$\mathit{normLOs}$: $\mathbb{B}$\\
+$\mathit{normInd}$: $\mathbb{B}$\\
+$\mathit{normAtt}$: $\mathbb{B}$
+
+\subsubsection* {State Invariant}
+
+None
+
+\subsubsection* {Assumptions}
+
+The state variables will be set before they are used.
+
+\subsubsection* {Access Routine Semantics}
+
+\noindent setNorms($\mathit{nLOs}$, $\mathit{nInd}$, $\mathit{nAtt}$):
+\begin{itemize}
+\item transition: $\mathit{normLOs}, \mathit{normInd}, \mathit{normAtt} := \mathit{nLOs}, \mathit{nInd}, \mathit{nAtt}$
+\item exception: none
+\end{itemize}
+
+\noindent getNLOs( ):
+\begin{itemize}
+\item output: $out := \mathit{normLOs}$
+\item exception: none
+\end{itemize}
+
+\noindent getNInd( ):
+\begin{itemize}
+\item output: $out := \mathit{normInd}$
+\item exception: none
+\end{itemize}
+
+\noindent getNAtt( ):
+\begin{itemize}
+\item output: $out := \mathit{normAtt}$
+\item exception: none
+\end{itemize}
+
+\noindent setNLOs($\mathit{nLOs}$):
+\begin{itemize}
+\item transition: $\mathit{normLOs} := \mathit{nLOs}$
+\item exception: none
+\end{itemize}
+
+\noindent setNInd($\mathit{nInd}$):
+\begin{itemize}
+\item transition: $\mathit{normInd} := \mathit{nInd}$
+\item exception: none
+\end{itemize}
+
+\noindent setNAtt($\mathit{nAtt}$):
+\begin{itemize}
+\item transition: $\mathit{normAtt} := \mathit{nAtt}$
+\item exception: none
+\end{itemize}
+
+\newpage
+
+\section* {Learning Outcomes Module}
+
+\subsection*{Template Module inherits Measures}
+
+LOsT
+
+\subsection* {Uses}
+
+Measures, IndicatorT, AttributeT, Services, Norm
+
+\subsection* {Syntax}
+
+\subsubsection* {Exported Constants}
+
+None
+
+\subsubsection* {Exported Types}
+
+LOsT = ?
+
+\subsubsection* {Exported Access Programs}
+
+\begin{tabular}{| l | l | l | p{5cm} |}
+\hline
+\textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+\hline
+new LOsT & String, $\mathbb{Z}$, $\mathbb{Z}$, $\mathbb{Z}$, $\mathbb{Z}$ & LOsT & IllegalArgumentException\\
+\hline
+getName & & String & ~\\
+\hline
+equals & LOsT & $\mathbb{B}$ & ~\\
+\hline
+\end{tabular}
+
+\subsection* {Semantics}
+
+\subsubsection* {State Variables}
+
+$\mathit{name}: \text{String}$\\
+$\mathit{n\_blw}$: $\mathbb{N}$\\
+$\mathit{n\_mrg}$: $\mathbb{N}$\\
+$\mathit{n\_mts}$: $\mathbb{N}$\\
+$\mathit{n\_exc}$: $\mathbb{N}$
+
+\subsubsection* {State Invariant}
+
+None
+
+\subsubsection* {Assumptions}
+
+None
+
+\subsubsection* {Access Routine Semantics}
+
+\noindent new LOsT($\mathit{topic}, \mathit{nblw}, \mathit{nmrg}, \mathit{nmts}, \mathit{nexc}$):
+\begin{itemize}
+\item transition: $\mathit{name}, \mathit{n\_blw}, \mathit{n\_mrg},
+  \mathit{n\_mts}, \mathit{n\_exc} := \mathit{topic}, \mathit{nblw},
+  \mathit{nmrg}, \mathit{nmts}, \mathit{nexc}$
+\item output: $out := \mathit{self}$
+\item exception: exc := $((\mathit{nblw} < 0) \vee (\mathit{nmrg} < 0) \vee 
+  (\mathit{nmts} < 0) \vee (\mathit{nexc}<0) \Rightarrow
+  \text{IllegalArgumentException}| (\mathit{nblw} = 0) \wedge (\mathit{nmrg} = 0) \wedge 
+  (\mathit{nmts} = 0) \wedge (\mathit{nexc}=0) \Rightarrow \text{IllegalArgumentException})$
+\end{itemize}
+
+\noindent getName():
+\begin{itemize}
+\item output: $out := \mathit{name}$
+\item exception: none
+\end{itemize}
+
+\noindent equals($o$):
+\begin{itemize}
+\item output: $out := \mathit{name} = o.\text{getName}()$
+\item exception: none
+\end{itemize}
+
+\noindent measures($\mathit{}$):
+\begin{itemize} 
+\item output: \textit{\# output should also be converted from natural numbers to reals}
+  $$out := (\neg \text{Norm.getNLOs()} \Rightarrow [\mathit{n\_blw}, \mathit{n\_mrg}, \mathit{n\_mts},
+  \mathit{n\_exc}] | \text{True} \Rightarrow \text{normal}([\mathit{n\_blw},
+  \mathit{n\_mrg}, \mathit{n\_mts}, \mathit{n\_exc}]))$$
+  
+\item exception: none
+\end{itemize}
+
+\noindent measures($\mathit{ind}$: IndicatorT):
+\begin{itemize}
+\item output: none
+\item exception: exc := UnsupportedOperationException
+\end{itemize}
+
+\noindent measures($\mathit{att}$: AttributeT):
+\begin{itemize}
+\item output: none
+\item exception: exc := UnsupportedOperationException
+\end{itemize}
+
+\newpage
+
+\section* {Courses Module}
+
+\subsection*{Template Module inherits Measures}
+
+CourseT
+
+\subsection* {Uses}
+
+Measures, IndicatorT, AttributeT, LOsT, Services, Norm
+
+\subsection* {Syntax}
+
+\subsubsection* {Exported Constants}
+
+None
+
+\subsubsection* {Exported Types}
+
+CourseT = ?
+
+\subsubsection* {Exported Access Programs}
+
+\begin{tabular}{| l | l | l | p{5cm} |}
+  \hline
+  \textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+  \hline
+  new CourseT & String, seq of IndicatorT & CourseT & \\
+  \hline
+  getName & & String & ~\\
+  \hline
+  getIndicators & & seq of IndicatorT & ~\\
+  \hline
+  getLOs & IndicatorT & seq of LOsT & ~\\
+  \hline
+  addLO & IndicatorT, LOsT & & ~\\
+  \hline
+  delLO & IndicatorT, LOsT & & ~\\
+  \hline
+  member & IndicatorT, seq of LOsT & $\mathbb{B}$ & ~\\
+  \hline
+  
+\end{tabular}
+
+\subsection* {Semantics}
+
+\subsubsection* {State Variables}
+
+$\mathit{name}: \text{String}$\\
+$m$: set of MapInd2LOsT \textit{\# mapping between indicators and set of learning outcomes}
+%$\mathit{measDone}$: $\mathbb{B}$
+
+\subsubsection* {State Invariant}
+
+None
+
+\subsubsection* {Assumptions}
+
+The programmer will not use CourseT until the indicators have been populate with
+learning outcomes.  The constructor starts with the set of learning outcomes
+being empty; therefore, addLO needs to be called at least once for each
+indicator for the course.  (\textit{\# Initially a measureDone flag was part of
+  the state variables for the module to track this, but in the interest of
+  keeping things simpler, it was removed.})  If learning outcomes are removed,
+it is assumed that not all of them will be removed before the Course is used in
+an aggregation calculation.
+
+\subsubsection* {Access Routine Semantics}
+
+\noindent new CourseT($\mathit{courseName}$, $\mathit{indicators}$):
+\begin{itemize}
+\item transition: $\mathit{name}, m := \mathit{courseName}, \{i: \text{IndicatorT} |
+  i \in \mathit{indicators} : \langle i, \{ \} \rangle \}$
+\item output: $out := \mbox{self}$
+\item exception: none
+\end{itemize}
+
+\noindent getName():
+\begin{itemize}
+\item output: $out := \mathit{name}$
+\item exception: none
+\end{itemize}
+
+\noindent getIndicators():
+\begin{itemize}
+\item output: $out := \langle s: \text{MapInd2LOsT } | s \in m : s.\mathit{ind} \rangle$
+\item exception: none
+\end{itemize}
+
+\noindent getLOs($\mathit{indicator}$):
+\begin{itemize}
+\item output:
+  $out := (\langle \mathit{indicator}, \mathit{LOs} \rangle \not\in m
+  \Rightarrow [] | \text{True} \Rightarrow \text{set\_to\_seq}(\mathit{LOs})
+  \text{ where } \langle \mathit{indicator}, \mathit{LOs} \rangle \in m)$
+\item exception: none
+\end{itemize}
+
+\noindent addLO($\mathit{indicator}$, $\mathit{outcome}$):
+\begin{itemize}
+\item transition:
+  $$m := \{ s: \text{MapInd2LOsT} | s \in m : (s.\mathit{ind} =
+    \mathit{indicator} \Rightarrow \langle s.\mathit{ind}, s.\mathit{LOs} \cup
+    \{\mathit{outcome}\} \rangle | \text{True} \Rightarrow s) \}$$
+\item exception: none
+\end{itemize}
+
+\noindent delLO($\mathit{indicator}$, $\mathit{outcome}$):
+\begin{itemize}
+\item transition:
+  $$m := \{ s: \text{MapInd2LOsT} | s \in m : (s.\mathit{ind} =
+    \mathit{indicator} \Rightarrow \langle s.\mathit{ind}, s.\mathit{LOs} -
+    \{\mathit{outcome}\} \rangle | \text{True} \Rightarrow s) \}$$
+\item exception: none
+\end{itemize}
+
+\noindent member($\mathit{indicator}$, $\mathit{outcomes}$):
+\begin{itemize}
+\item output:
+  $$out := \exists(s: \text{MapInd2LOsT} | s \in m : s.\mathit{ind} =
+  \mathit{indicator} \wedge \forall ( x: \text{LOsT} | : x \in s.\mathit{LOs}
+  \leftrightarrow x \in \mathit{outcomes}))$$
+\item exception: none
+\end{itemize}
+
+\noindent measures():
+\begin{itemize}
+\item output: none
+\item exception: exc := UnsupportedOperationException
+\end{itemize}
+
+\noindent measures($\mathit{ind}$: IndicatorT):
+\begin{itemize}
+\item output:
+  $out := (\mathit{self}.\text{getLOs}(\mathit{ind}) = [] \Rightarrow [0, 0,  0,
+  0] | \text{True} \Rightarrow (\text{Norm.getNInd()} \Rightarrow \text{normal}(\mathit{measureInd})
+  | \text{True} \Rightarrow \mathit{measureInd} ))$ \newline where $\mathit{measureInd}
+  \equiv \text{sumMeas}(\mathit{o}: \text{LOsT} | \mathit{o} \in
+  \mathit{self}.\text{getLOs}(\mathit{ind}) :
+  \mathit{o}.\text{measures}())$
+
+  \textit{\# sumMeas is a binary operator, so it can be used with our normal
+    notation.}
+  
+\item exception: none
+\end{itemize}
+
+\noindent measures($\mathit{att}$: AttributeT):
+\begin{itemize}
+\item output:
+  $out := (\mathit{att}.\text{getIndicators()} = [] \Rightarrow [0, 0, 0, 0] |
+  \text{True} \Rightarrow (\text{Norm.getNAtt()} \Rightarrow \text{normal} (\mathit{measureInd})
+  | \text{True} \Rightarrow \mathit{measureInd} ))$ \newline where $\mathit{measureInd}
+  \equiv \text{sumMeas}(\mathit{i}: \text{IndicatorT} | \mathit{i} \in
+  \mathit{att}.\text{getIndicators()} :
+  \mathit{self}.\text{measures}(i))$
+\item exception: none
+\end{itemize}
+
+\subsection*{Local Functions}
+
+\noindent $\mbox{set\_to\_seq}: \text{set of } \text{LOsT} \rightarrow \mbox{seq of }
+\text{LOsT}$\\
+\noindent
+$\mbox{set\_to\_seq}(s) \equiv \langle x: \text{LOsT} | x \in s : x \rangle$
+\textit{\# Return a seq of all of the elems in the set s}
+~\\
+
+\noindent $\mbox{sumMeas}: \text{seq [4] of } \mathbb{R} \times \text{seq
+  [4] of } \mathbb{R} \rightarrow \text{seq [4] of } \mathbb{R}$\\
+\noindent
+$\mbox{sumMeas}(a, b) \equiv [a_0 + b_0, a_1 + b_1, a_2 + b_2, a_3 + b_3]$
+
+\subsection*{Local Types}
+
+\noindent MapInd2LOsT = tuple of ($\mathit{ind}$: IndicatorT, $\mathit{LOs}$: set
+of LOsT)
+
+\newpage
+
+\section* {ProgramT Module}
+
+ProgramT
+
+\subsection* {Template Module inherits Measure, HashSet(CourseT)}
+
+\subsection* {Uses}
+
+Measures, IndicatorT, AttributeT, Services, Norm, CourseT, HashSet
+
+\subsection* {Syntax}
+
+\subsubsection* {Exported Constants}
+
+None
+
+\subsubsection* {Exported Types}
+
+ProgramT = ?
+
+\subsubsection* {Exported Access Programs}
+
+\begin{tabular}{| l | l | l | p{5cm} |}
+  \hline
+  \textbf{Routine name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions}\\
+  \hline
+  \hline
+  
+\end{tabular}
+
+\subsection* {Semantics}
+
+\subsubsection* {State Variables}
+
+s: set of CourseT \textit{\# inherited from HashSet(CourseT)}
+
+\subsubsection* {State Invariant}
+
+\subsubsection* {Assumptions}
+
+The set of courses will not be empty and at least one course will have non-zero
+measures for each attribute.
+
+\subsubsection* {Access Routine Semantics}
+
+\noindent measures():
+\begin{itemize}
+\item output: none
+\item exception: exc := UnsupportedOperationException
+\end{itemize}
+
+\noindent measures($\mathit{ind}$: IndicatorT):
+\begin{itemize}
+\item output: none
+\item exception: exc := UnsupportedOperationException
+\end{itemize}
+
+\noindent measures($\mathit{att}$: AttributeT):
+\begin{itemize}
+\item output:
+  $out := \text{normal} (\text{sumMeas}(c: \text{CourseT} | c \in s :
+  \mathit{c}.\text{measures}(att)))$
+\item exception: none
+\end{itemize}
+
+\newpage
+
+\section* {HashSet Module}
+
+\subsection* {Generic Template Module inherits Set(E)}
+
+HashSet(E)
+
+\subsection* {Considerations}
+
+Implemented as part of Java, as described in the
+\href{https://docs.oracle.com/javase/8/docs/api/java/util/HashSet.html} {Oracle Documentation}
+
+\end {document}
